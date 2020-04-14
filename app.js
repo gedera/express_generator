@@ -3,12 +3,21 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const redis = require('redis');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var clientsRouter = require('./routes/clients');
 
 var app = express();
+
+// create and connect redis client to local instance.
+const redisClient = redis.createClient();
+
+// Print redis errors to the console
+redisClient.on('error', (err) => {
+  console.log("Error " + err);
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,6 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// use response-time as a middleware
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -1,22 +1,13 @@
 var express = require('express');
+const redis = require('redis');
 var router = express.Router();
-
-const clients = [
-  {id: '1',
-   name: 'name1',
-   lastName: 'last_name2'},
-  {id: '2',
-   name: 'name2',
-   lastNamt: 'last_name2'}
-];
-
+const redisClient = redis.createClient();
 
 /* GET clients listing. */
 router.get('/', function(req, res, next) {
-  // res.send('GET clients listing');
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Content-Type', 'application/json');
-  res.status(200).json(clients);
+  res.send('GET clients listing');
 });
 
 /* GET client by ID listing. */
@@ -25,9 +16,18 @@ router.get('/:id', function(req, res, next) {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Content-Type', 'application/json');
 
-  var client = clients.find(element => element['id'] === req.params["id"]);
+  // var client = clients.find(element => element['id'] === req.params["id"]);
 
-  res.status(200).json(client);
+  console.log(`Llego el id ${req.params['id']}`);
+  redisClient.hgetall(`client:${req.params['id']}`, (err, result) => {
+    if (result) {
+      console.log(result);
+      res.status(200).json(result);
+    } else {
+      console.log('Nada vieja');
+      res.status(200).json({'error': 'cant_find'});
+    }
+  });
 });
 
 /* POST client listing. */
@@ -36,7 +36,14 @@ router.post('/', function(req, res, next) {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Content-Type', 'application/json');
 
-  res.status(200).json(req.body);
+  console.log(`llego el id ${req.body['id']}`);
+  redisClient.hmset(`client:${req.body['id']}`, req.body, (err, result) => {
+    if (result) {
+      res.status(200).json(req.body);
+    } else {
+      res.status(200).json({'error': 'cant_create'});
+    }
+  });
 });
 
 /* PATCH client listing. */
