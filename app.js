@@ -11,6 +11,11 @@ var clientsRouter = require('./routes/clients');
 
 var app = express();
 
+var requestTime = function (req, res, next) {
+  req.requestTime = Date.now();
+  next();
+};
+
 // create and connect redis client to local instance.
 const redisClient = redis.createClient();
 
@@ -23,12 +28,19 @@ redisClient.on('error', (err) => {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(requestTime);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // use response-time as a middleware
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  console.log(`[${req.requestTime}] ESTA ES LA REQUEST ${req.url}`);
+  next();
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
