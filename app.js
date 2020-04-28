@@ -4,8 +4,26 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const mongo = require('mongodb');
+const mongoose = require('mongoose');
+// import { MongoError } from "mongodb";
+// import * as mongoose from "mongoose";
+
+// Establecemos conexión con MongoDD
+mongoose.connect('mongodb://localhost/my_database', { useNewUrlParser: true, useUnifiedTopology: true }, function (err) {
+  if (err) {
+    console.error("No se pudo conectar a MongoDB!");
+    console.error(err.message);
+    process.exit();
+  } else {
+    console.log("MongoDB conectado.");
+  }
+});
+
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var clientsRouter = require('./routes/clients');
 
 var app = express();
 
@@ -21,6 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/clients', clientsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
