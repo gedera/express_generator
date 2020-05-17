@@ -1,21 +1,21 @@
 var ClientSchema = require('./client_schema');
 
 function init(args){
-  new ClientSchema(args);
+  return new ClientSchema(args);
 }
 
 function find(id) {
-  const result = ClientSchema.findById(id).exec();
-  return result;
-};
+  return new Promise(resolve => {
+    resolve(ClientSchema.findById(id).exec());
+  });
+}
 
-// async function find(id) {
-//   try {
-//     const result = await ClientSchema.findById(id).exec();
-//     return Promise.resolve(result);
-//   }catch (err) {
-//     return Promise.reject(err);
-//   }
-// }
+function all() {
+  return new Promise(resolve => {
+    resolve(ClientSchema.find().exec());
+  });
+}
 
-module.exports = {init, find };
+
+
+module.exports = {init, find, all };

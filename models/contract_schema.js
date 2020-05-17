@@ -1,6 +1,8 @@
+var Client = require('./client');
+
 const mongoose = require('mongoose');
 
-const ClientSchema = new mongoose.Schema({
+const ContractSchema = new mongoose.Schema({
   fname: {
     type: String,
     trim: true,
@@ -11,13 +13,9 @@ const ClientSchema = new mongoose.Schema({
     trim: true,
     required: "Apellido es requerido"
   },
-  gender: {
-    type: Boolean,
-    default: true
-  },
-  birthday: {
-    type: Date,
-    required: "Fecha de nacimiento es requerido"
+  client: {
+    type: mongoose.Schema.Schema.ObjectId,
+    ref: Client
   },
   created_at: {
     type: Date,
@@ -29,10 +27,12 @@ const ClientSchema = new mongoose.Schema({
   }
 });
 
-ClientSchema.pre("save", function (next) {
+ContractSchema.pre("save", function (next) {
   this.updated = new Date();
 
   next();
 });
 
-module.exports = mongoose.model("Client", ClientSchema);
+let ConSchema = mongoose.model("Contract", ContractSchema);
+
+module.exports = ConSchema;
