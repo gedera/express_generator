@@ -4,6 +4,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const redis = require('redis');
+// create and connect redis client to local instance.
+const redisClient = redis.createClient();
+
+// Print redis errors to the console
+redisClient.on('error', (err) => {
+  console.log("Error " + err);
+});
+
+
 const mongo = require('mongodb');
 const mongoose = require('mongoose');
 // import { MongoError } from "mongodb";
@@ -24,12 +34,13 @@ mongoose.connect('mongodb://localhost/my_database', { useNewUrlParser: true, use
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var clientsRouter = require('./routes/clients');
+var plansRouter = require('./routes/plans');
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// // view engine setup
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -40,6 +51,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/clients', clientsRouter);
+app.use('/plans', plansRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
