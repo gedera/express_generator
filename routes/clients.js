@@ -5,7 +5,7 @@ var Client = require('../models/client');
 var ClientSchema = require('../models/client_schema');
 
 // /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
   console.log(req.get('Authorization'));
   try {
     result = await Client.all();
