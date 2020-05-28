@@ -4,10 +4,8 @@ function init(args){
   return new ClientSchema(args);
 }
 
-function find(id) {
-  return new Promise(resolve => {
-    resolve(ClientSchema.findById(id).exec());
-  });
+async function find(id) {
+  return await ClientSchema.findById(id).exec();
 }
 
 function all() {
