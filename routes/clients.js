@@ -5,7 +5,7 @@ var Client = require('../models/client');
 var ClientSchema = require('../models/client_schema');
 
 // /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
   console.log(req.get('Authorization'));
   try {
     result = await Client.all();
@@ -34,7 +34,7 @@ router.post('/', function(req, res, next) {
         console.log('Success!');
         res.status(200).json({status: true, response: client});
       } else {
-        res.status(200).json(status: false, response: err);
+        res.status(200).json({status: false, response: err});
       }
     });
   }catch (err) {

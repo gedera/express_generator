@@ -1,11 +1,20 @@
-version: '3'
+version: '3.5'
 
 services:
   redis:
     image: redis:5.0-alpine
+    container_name: 'redis-node'
     ports:
       - 6379:6379
   mongo:
     image: mongo
+    container_name: 'mongo-node'
     ports:
       - 27017:27017
+  node-express:
+    image: 'node-express'
+    container_name: 'node-express'
+    network_mode: host
+    depends_on:
+      - redis
+      - mongo
